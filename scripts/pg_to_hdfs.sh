@@ -6,7 +6,7 @@ function stream_backup_to_hdfs() {
   until [ $n -gt $MAX_RETRIES ]
   do
     echo "Start dump $1: [Attempt $n of $MAX_RETRIES]"
-    pg_dump -U $PG_USER -h $PG_HOST -d $1 | gzip | hdfs dfs -put -f - $CURRENT_BACKUP_FOLDER/$1.gz && echo "Finished dump: $1 [Attempt $n of $MAX_RETRIES]" && return 0  
+    pg_dump -U $PG_USER -h $PG_HOST -p $PG_PORT -d $1 | gzip | hdfs dfs -put -f - $CURRENT_BACKUP_FOLDER/$1.gz && echo "Finished dump: $1 [Attempt $n of $MAX_RETRIES]" && return 0  
     
     echo "Failed dump: $1"
     n=$[$n+1]
@@ -28,6 +28,7 @@ function prune_folder(){
 DATE=`date +%Y-%m-%d_%H_%M_%S`
 RETAIN_VERSIONS=${RETAIN_VERSIONS:-5}
 MAX_RETRIES=${MAX_RETRIES:-5}
+PG_PORT=${PG_PORT:-5432}
 
 if [ -z $PG_USER ]; then
   echo "You need to set PG_USER"
