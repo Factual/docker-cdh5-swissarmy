@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -o pipefail
+set -e
+
 function stream_backup_to_hdfs() {
   
   n=1
